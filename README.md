@@ -1,62 +1,37 @@
-# Soc Ops
+# Soc Ops — Social Bingo for Real People
 
-Social Bingo game for in-person mixers. Find people who match the questions and get 5 in a row!
+Welcome to Soc Ops, a playful Social Bingo experience built for in-person mixers, conferences, and friendly meetups. Spark conversations, break the ice, and celebrate the small wins: first to five in a row wins!
 
-🎮 **[Play the Game](https://madebygps.github.io/vscode-github-copilot-agent-lab/)** • 📚 **[View Lab Guide](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/)**
+Why it’s fun
+- Quick to play: a single page web app with a shuffled 5x5 bingo board.
+- Designed for conversation: prompts encourage real human interaction, not just screen time.
+- Lightweight: runs locally with minimal dependencies — ideal for demos and workshops.
 
----
+Live demo & docs
+- Play the live demo: https://madebygps.github.io/vscode-github-copilot-agent-lab/
+- Workshop and design guide: see the `workshop/` folder or the docs link above.
 
-## 📚 Lab Guide
+Features
+- Shuffled boards with a FREE SPACE center
+- Mark/unmark squares with instant UI feedback
+- Bingo detection (rows, columns, diagonals)
+- Test coverage and linting preconfigured for development
 
-| Part | Title |
-|------|-------|
-| [**00**](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/step.html?step=00-overview) | Overview & Checklist |
-| [**01**](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/step.html?step=01-setup) | Setup & Context Engineering |
-| [**02**](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/step.html?step=02-design) | Design-First Frontend |
-| [**03**](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/step.html?step=03-quiz-master) | Custom Quiz Master |
-| [**04**](https://madebygps.github.io/vscode-github-copilot-agent-lab/docs/step.html?step=04-multi-agent) | Multi-Agent Development |
+Quick start
+1. Install: Python 3.13+ is required.
+2. Sync dependencies: `uv sync` (uses the provided uv project manager)
+3. Run locally: `uv run uvicorn app.main:app --reload`
+4. Open: http://localhost:8000
 
-> 📝 Lab guides are also available in the [`workshop/`](workshop/) folder for offline reading.
+Development
+- Tests: `uv run pytest`
+- Lint & format: `uv run ruff check .` and `uv run ruff format .`
+- A devcontainer is included at `.devcontainer/` for an opinionated developer experience.
 
----
+Contributing
+Contributions, bug reports, and ideas are very welcome. Please read CONTRIBUTING.md for guidelines and opening a PR.
 
-## Prerequisites
+License
+This project is open source under the terms of the included LICENSE file.
 
-- [Python 3.13](https://www.python.org/downloads/) or higher
-- [uv](https://docs.astral.sh/uv/) package manager
-
-## Setup
-
-```bash
-uv sync
-```
-
-### Devcontainer / Codespaces
-
-This repository includes a preconfigured devcontainer at `.devcontainer/devcontainer.json`.
-
-- **Local VS Code**: Reopen the repo in container when prompted
-- **GitHub Codespaces**: In your own repository created from this template, click **Code** → **Codespaces** → **Create codespace on main**
-
-## Run
-
-```bash
-uv run uvicorn app.main:app --reload
-```
-
-Then open http://localhost:8000 in your browser.
-
-## Test
-
-```bash
-uv run pytest
-```
-
-## Lint
-
-```bash
-uv run ruff check .
-uv run ruff format .
-```
-
-Deploys automatically to GitHub Pages on push to `main`.
+Thanks for checking out Soc Ops — go find someone who loves karaoke and mark that square!
