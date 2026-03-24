@@ -1,27 +1,48 @@
-<div class="grid grid-cols-5 gap-1 w-full max-w-md mx-auto aspect-square">
-    {% for square in session.board %}
-    {% set is_winning = square.id in session.winning_square_ids %}
-    <button
-        {% if not square.is_free_space %}
-        hx-post="/toggle/{{ square.id }}"
-        hx-target="#game-container"
-        hx-swap="outerHTML"
-        {% endif %}
-        {% if square.is_free_space %}disabled{% endif %}
-        class="relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight
-        {%- if square.is_marked %}
-            {%- if is_winning %} bg-amber-200 border-amber-400 text-amber-900
-            {%- else %} bg-marked border-marked-border text-green-800
-            {%- endif %}
-        {%- else %} bg-white text-gray-700 active:bg-gray-100
-        {%- endif %}
-        {%- if square.is_free_space %} font-bold text-sm{% endif %}"
-        aria-pressed="{{ 'true' if square.is_marked else 'false' }}"
-        aria-label="{{ 'Free space' if square.is_free_space else square.text }}">
-        <span class="wrap-break-word hyphens-auto">{{ square.text }}</span>
-        {% if square.is_marked and not square.is_free_space %}
-        <span class="absolute top-0.5 right-0.5 text-green-600 text-xs">✓</span>
-        {% endif %}
-    </button>
-    {% endfor %}
+<div class="border-glow-cyan p-4 flex flex-col items-center justify-center" style="background-color: var(--dark-card);">
+    <div class="grid grid-cols-5 gap-2 w-full max-w-md mx-auto aspect-square">
+        {% for square in session.board %}
+        {% set is_winning = square.id in session.winning_square_ids %}
+        <button
+            {% if not square.is_free_space %}
+            hx-post="/toggle/{{ square.id }}"
+            hx-target="#game-container"
+            hx-swap="outerHTML"
+            {% endif %}
+            {% if square.is_free_space %}disabled{% endif %}
+            class="relative flex items-center justify-center p-1 text-center border-2 transition-all duration-100 select-none min-h-[60px] text-xs leading-tight font-bold"
+            style="font-family: 'Courier New', monospace; 
+            {%- if square.is_marked %}
+                {%- if is_winning %}
+                    background-color: var(--neon-cyan);
+                    border-color: var(--neon-cyan);
+                    box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 10px rgba(0, 217, 255, 0.3);
+                    color: var(--dark-bg);
+                {%- else %}
+                    background-color: var(--neon-pink);
+                    border-color: var(--neon-pink);
+                    box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px rgba(255, 0, 110, 0.3);
+                    color: var(--text-bright);
+                {%- endif %}
+            {%- else %}
+                {%- if square.is_free_space %}
+                    background-color: var(--neon-purple);
+                    border-color: var(--neon-purple);
+                    box-shadow: 0 0 12px var(--neon-purple), inset 0 0 8px rgba(160, 32, 240, 0.2);
+                    color: var(--text-bright);
+                {%- else %}
+                    background-color: transparent;
+                    border-color: var(--neon-cyan);
+                    box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 5px rgba(0, 217, 255, 0.1);
+                    color: var(--text-light);
+                {%- endif %}
+            {%- endif %}"
+            aria-pressed="{{ 'true' if square.is_marked else 'false' }}"
+            aria-label="{{ 'Free space' if square.is_free_space else square.text }}">
+            <span class="wrap-break-word hyphens-auto">{{ square.text }}</span>
+            {% if square.is_marked and not square.is_free_space %}
+            <span class="absolute top-0.5 right-0.5 text-text-bright text-xs" style="color: var(--text-bright);">★</span>
+            {% endif %}
+        </button>
+        {% endfor %}
+    </div>
 </div>

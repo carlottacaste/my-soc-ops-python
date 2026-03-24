@@ -1,15 +1,15 @@
 <div id="game-container">
 <div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50">
-    <div class="text-center max-w-sm">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Soc Ops</h1>
-        <p class="text-lg text-gray-600 mb-8">Social Bingo</p>
+    <div class="text-center max-w-sm border-glow-cyan p-8 flex flex-col">
+        <h1 class="text-5xl font-bold glow-cyan mb-2" style="font-family: 'Press Start 2P', cursive; letter-spacing: 2px;">SOC OPS</h1>
+        <p class="text-lg glow-purple mb-8" style="font-family: 'Press Start 2P', cursive; letter-spacing: 1px;">ARCADE BINGO</p>
 
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-8">
-            <h2 class="font-semibold text-gray-800 mb-3">How to play</h2>
-            <ul class="text-left text-gray-600 text-sm space-y-2">
-                <li>• Find people who match the questions</li>
-                <li>• Tap a square when you find a match</li>
-                <li>• Get 5 in a row to win!</li>
+        <div class="border-glow-purple p-6 mb-8" style="background-color: var(--dark-card);">
+            <h2 class="font-semibold glow-cyan mb-3 text-center" style="font-family: 'Press Start 2P', cursive; font-size: 0.875rem;">HOW TO PLAY</h2>
+            <ul class="text-left text-text-light text-xs space-y-2" style="color: var(--text-light);">
+                <li style="padding-bottom: 0.25rem;">▶ Find people who match</li>
+                <li style="padding-bottom: 0.25rem;">▶ Tap a square when found</li>
+                <li style="padding-bottom: 0.25rem;">▶ Get 5 in a row to WIN!</li>
             </ul>
         </div>
 
@@ -17,8 +17,9 @@
             hx-post="/start"
             hx-target="#game-container"
             hx-swap="outerHTML"
-            class="w-full bg-accent text-white font-semibold py-4 px-8 rounded-lg text-lg active:bg-accent-light transition-colors">
-            Start Game
+            class="w-full arcade-btn arcade-btn-pink font-semibold py-4 px-8 text-lg"
+            style="font-family: 'Press Start 2P', cursive; font-size: 0.75rem;">
+            ▶ START GAME
         </button>
     </div>
 </div>
