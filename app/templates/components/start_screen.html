@@ -1,26 +1,367 @@
 <div id="game-container">
-<div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50">
-    <div class="text-center max-w-sm border-glow-cyan p-8 flex flex-col">
-        <h1 class="text-5xl font-bold glow-cyan mb-2" style="font-family: 'Press Start 2P', cursive; letter-spacing: 2px;">SOC OPS</h1>
-        <p class="text-lg glow-purple mb-8" style="font-family: 'Press Start 2P', cursive; letter-spacing: 1px;">ARCADE BINGO</p>
+  <style>
+    .start-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--dark-bg);
+    }
 
-        <div class="border-glow-purple p-6 mb-8" style="background-color: var(--dark-card);">
-            <h2 class="font-semibold glow-cyan mb-3 text-center" style="font-family: 'Press Start 2P', cursive; font-size: 0.875rem;">HOW TO PLAY</h2>
-            <ul class="text-left text-text-light text-xs space-y-2" style="color: var(--text-light);">
-                <li style="padding-bottom: 0.25rem;">▶ Find people who match</li>
-                <li style="padding-bottom: 0.25rem;">▶ Tap a square when found</li>
-                <li style="padding-bottom: 0.25rem;">▶ Get 5 in a row to WIN!</li>
-            </ul>
-        </div>
+    .start-screen-inner {
+      max-width: 700px;
+      width: 100%;
+      animation: fadeInScale 0.6s ease-out;
+    }
 
-        <button
-            hx-post="/start"
-            hx-target="#game-container"
-            hx-swap="outerHTML"
-            class="w-full arcade-btn arcade-btn-pink font-semibold py-4 px-8 text-lg"
-            style="font-family: 'Press Start 2P', cursive; font-size: 0.75rem;">
-            ▶ START GAME
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: slideUpIn 0.7s ease-out 0.1s both;
+    }
+
+    @keyframes slideUpIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Press Start 2P', cursive;
+      text-shadow: 0 0 30px rgba(0, 217, 255, 0.4), 0 0 60px rgba(255, 0, 110, 0.3);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      color: var(--text-light);
+      margin: 0;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .modes-section {
+      margin-bottom: 2.5rem;
+      animation: slideUpIn 0.7s ease-out 0.25s both;
+    }
+
+    .modes-label {
+      font-size: 0.875rem;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: 600;
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .game-mode-card {
+      padding: 1.5rem;
+      background: var(--dark-card);
+      border: 2px solid var(--neon-purple);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(160, 32, 240, 0.3), inset 0 0 10px rgba(160, 32, 240, 0.1);
+    }
+
+    .game-mode-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(255, 0, 110, 0.1));
+      opacity: 0;
+      transition: opacity 150ms ease;
+      pointer-events: none;
+    }
+
+    .game-mode-card:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 217, 255, 0.5), inset 0 0 15px rgba(0, 217, 255, 0.2);
+      transform: translateY(-4px);
+    }
+
+    .game-mode-card:hover::before {
+      opacity: 1;
+    }
+
+    .game-mode-card.selected {
+      border-color: var(--neon-cyan);
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(255, 0, 110, 0.05));
+      box-shadow: 0 0 40px rgba(0, 217, 255, 0.6), inset 0 0 20px rgba(0, 217, 255, 0.2);
+    }
+
+    .mode-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .mode-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .mode-desc {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      line-height: 1.3;
+    }
+
+    .how-to-play {
+      background: linear-gradient(135deg, rgba(160, 32, 240, 0.1), rgba(0, 217, 255, 0.05));
+      border: 1px solid rgba(0, 217, 255, 0.3);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      animation: slideUpIn 0.7s ease-out 0.35s both;
+    }
+
+    .how-to-play h3 {
+      font-size: 0.875rem;
+      color: var(--neon-cyan);
+      margin: 0 0 1rem 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    .how-to-play ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .how-to-play li {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .how-to-play li:before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      color: var(--neon-pink);
+    }
+
+    .how-to-play li:last-child {
+      margin-bottom: 0;
+    }
+
+    .start-button-wrapper {
+      animation: slideUpIn 0.7s ease-out 0.45s both;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-family: 'Press Start 2P', cursive;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+      color: var(--dark-bg);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), 0 0 40px rgba(255, 0, 110, 0.2);
+    }
+
+    .start-btn:hover {
+      box-shadow: 0 0 30px rgba(0, 217, 255, 0.6), 0 0 60px rgba(255, 0, 110, 0.4);
+      transform: scale(1.02);
+    }
+
+    .start-btn:active {
+      transform: scale(0.98);
+    }
+
+    .start-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    @media (max-width: 600px) {
+      .modes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .start-screen {
+        padding: 1rem;
+      }
+    }
+  </style>
+
+  <div class="start-screen">
+    <div class="start-screen-inner">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <h1 class="hero-title">SOC OPS</h1>
+        <p class="hero-subtitle">Pick a challenge, spark a conversation</p>
+      </div>
+
+      <!-- Game Mode Selection -->
+      <div class="modes-section">
+        <div class="modes-label">Choose your game</div>
+        <form id="mode-form">
+          <div class="modes-grid">
+            <!-- Classic Bingo -->
+            <label class="game-mode-card selected" data-mode="classic_bingo">
+              <input type="radio" name="game_mode" value="classic_bingo" checked style="display: none;">
+              <span class="mode-icon">🎯</span>
+              <div class="mode-name">Classic Bingo</div>
+              <div class="mode-desc">Find 5 in a row to win</div>
+            </label>
+
+            <!-- Scavenger Hunt -->
+            <label class="game-mode-card" data-mode="scavenger_hunt">
+              <input type="radio" name="game_mode" value="scavenger_hunt" style="display: none;">
+              <span class="mode-icon">🔍</span>
+              <div class="mode-name">Hunt</div>
+              <div class="mode-desc">Check off items to find</div>
+            </label>
+
+            <!-- Card Deck -->
+            <label class="game-mode-card" data-mode="card_deck">
+              <input type="radio" name="game_mode" value="card_deck" style="display: none;">
+              <span class="mode-icon">🃏</span>
+              <div class="mode-name">Card Deck</div>
+              <div class="mode-desc">Quick card draws</div>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- How to Play -->
+      <div class="how-to-play">
+        <h3>How to play</h3>
+        <ul>
+          <li>Select a game mode above</li>
+          <li>Find people who match the prompts</li>
+          <li>Reach the goal to win</li>
+        </ul>
+      </div>
+
+      <!-- Start Button -->
+      <div class="start-button-wrapper">
+        <button 
+          id="start-btn"
+          class="start-btn" 
+          hx-post="/start"
+          hx-target="#game-container"
+          hx-swap="outerHTML"
+          hx-include="[name='game_mode']"
+          hx-indicator="#start-btn">
+          ▶ Start Game
         </button>
+        <input type="hidden" name="game_mode" id="game-mode-input" value="classic_bingo" />
+      </div>
     </div>
+  </div>
+
+  <script>
+    (function initializeGameModes() {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setup);
+      } else {
+        setup();
+      }
+
+      function setup() {
+        const gameModeInput = document.getElementById('game-mode-input');
+        const startBtn = document.getElementById('start-btn');
+        const modeCards = document.querySelectorAll('.game-mode-card');
+
+        console.log('Game mode selector initialized. Found', modeCards.length, 'cards');
+
+        modeCards.forEach((card, index) => {
+          card.addEventListener('click', function() {
+            const mode = this.dataset.mode;
+            const input = this.querySelector('input[type="radio"]');
+            
+            // Update visual selection
+            modeCards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            if (input) {
+              input.checked = true;
+            }
+            
+            // Update the hidden input that HTMX will send
+            if (gameModeInput) {
+              gameModeInput.value = mode;
+              console.log('Selected mode:', mode);
+            }
+            
+            // Update button text
+            const modeNames = {
+              'classic_bingo': '▶ Start Classic Bingo',
+              'scavenger_hunt': '▶ Start Hunt',
+              'card_deck': '▶ Start Card Deck'
+            };
+            startBtn.textContent = modeNames[mode] || '▶ Start Game';
+          });
+        });
+
+        // Set first card as selected by default
+        if (modeCards.length > 0) {
+          modeCards[0].click();
+        }
+      }
+    })();
+  </script>
 </div>
-</div>
+

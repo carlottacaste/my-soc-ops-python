@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.game_service import GameSession, get_session
-from app.models import GameState
+from app.models import GameMode, GameState
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -32,14 +32,40 @@ async def home(request: Request) -> Response:
     return templates.TemplateResponse(
         request,
         "home.html",
-        {"session": session, "GameState": GameState},
+        {"session": session, "GameState": GameState, "GameMode": GameMode},
     )
 
 
 @app.post("/start", response_class=HTMLResponse)
 async def start_game(request: Request) -> Response:
     session = _get_game_session(request)
-    session.start_game()
+
+    # Default to classic bingo
+    game_mode_str = GameMode.CLASSIC_BINGO.value
+
+    # Try to get game_mode from various sources
+    # 1. Check query params first
+    if "game_mode" in request.query_params:
+        game_mode_str = request.query_params["game_mode"]
+    else:
+        # 2. Try form data if content-type indicates form data
+        content_type = request.headers.get("content-type", "")
+        if "urlencoded" in content_type:
+            try:
+                form_data = await request.form()
+                if form_data and "game_mode" in form_data:
+                    game_mode_str = form_data["game_mode"]
+            except Exception as e:
+                # Log but don't fail - just use default
+                print(f"Form parsing error: {e}")
+
+    # Validate and convert to GameMode enum
+    try:
+        game_mode = GameMode(game_mode_str)
+    except ValueError:
+        game_mode = GameMode.CLASSIC_BINGO
+
+    session.start_game(game_mode)
     return templates.TemplateResponse(
         request, "components/game_screen.html", {"session": session}
     )
